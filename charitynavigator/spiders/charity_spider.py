@@ -2,6 +2,8 @@ import scrapy
 import re
 import json
 import os
+from collections import deque
+import time
 
 # TODO: add parse exception handling
 # TODO: after 100000 requests, take a break
@@ -13,6 +15,9 @@ class CharitySpider(scrapy.Spider):
     def __init__(self, input_file=None, *args, **kwargs):
         super(CharitySpider, self).__init__(*args, **kwargs)
         self.input_file = input_file or "eo1.json"  # Default to eo1.json if not specified
+        self.request_queue = deque()
+        self.last_request_time = 0
+        self.min_request_interval = 0.5  # seconds
     
     start_urls = []  # Initialize as empty list
     
@@ -22,14 +27,24 @@ class CharitySpider(scrapy.Spider):
         return [f'https://www.charitynavigator.org/ein/{ein}' for ein in ein_list]
     
     def start_requests(self):
-        for url in self._prepare_start_urls():
-            yield scrapy.Request(
-                url=url,
-                callback=self.parse,
-                dont_filter=True,
-                meta={'handle_httpstatus_list': [403, 404, 500, 406]}
-                
-            )
+        urls = self._prepare_start_urls()
+        self.request_queue.extend(urls)
+        
+        while self.request_queue:
+            current_time = time.time()
+            if current_time - self.last_request_time >= self.min_request_interval:
+                url = self.request_queue.popleft()
+                self.last_request_time = current_time
+                yield scrapy.Request(
+                    url=url,
+                    callback=self.parse,
+                    dont_filter=True,
+                    meta={
+                        'handle_httpstatus_list': [403, 404, 500, 406],
+                        'download_timeout': 30,
+                        'max_retry_times': 5
+                    }
+                )
 
     
     def _get_rating_information_text(self, response):
@@ -73,13 +88,14 @@ class CharitySpider(scrapy.Spider):
     def _parse_star_rating(self, response):
         rating_information_texts = self._get_rating_information_text(response)
         
-        star_match = re.search(r"earning it a\s*(One|Two|Three|Four)-Star\s*rating", rating_information_texts)
+        star_match = re.search(r"earning it a\s*(Zero|One|Two|Three|Four)-Star\s*rating", rating_information_texts)
         if star_match:
             star_map = {
                 'Four': 4,
                 'Three': 3,
                 'Two': 2,
-                'One': 1
+                'One': 1,
+                'Zero': 0
             }
             return star_map.get(star_match.group(1))
         return None
@@ -163,9 +179,13 @@ class CharitySpider(scrapy.Spider):
         """
         
         if response.status == 406:
-            self.logger.error(f"Error parsing {response.url}: {response.status}")
-            with open('error_log.txt', 'a') as f:
-                f.write(f"{response.url} - {response.status}\n")
+            # Don't retry immediately, but requeue with delay
+            url = response.url
+            self.logger.warning(f"Received 406 for {url}, requeueing...")
+            req = response.request.copy()
+            req.dont_filter = True
+            req.priority = -1  # Lower priority for retries
+            yield req
             return
         
         

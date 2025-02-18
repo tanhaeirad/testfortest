@@ -25,7 +25,8 @@ DEFAULT_REQUEST_HEADERS = {
     'sec-fetch-site': 'same-origin',
     'sec-fetch-user': '?1',
     'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+    'referer': 'https://www.charitynavigator.org/',
 }
 
 
@@ -41,7 +42,7 @@ CONCURRENT_REQUESTS = 128
 CONCURRENT_REQUESTS_PER_DOMAIN = 128
 
 # Random delay between 0.1 and 0.5 seconds
-DOWNLOAD_DELAY = 0.25
+DOWNLOAD_DELAY = 0.001
 RANDOMIZE_DOWNLOAD_DELAY = True  # This will multiply DOWNLOAD_DELAY by random value between 0.5 and 1.5
 
 # Disable cookies (enabled by default)
@@ -58,19 +59,30 @@ COOKIES_ENABLED = False
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-#SPIDER_MIDDLEWARES = {
-#    "charitynavigator.middlewares.CharitynavigatorSpiderMiddleware": 543,
-#}
+SPIDER_MIDDLEWARES = {
+    'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware': 50,
+    'scrapy.spidermiddlewares.offsite.OffsiteMiddleware': 500,
+    'scrapy.spidermiddlewares.referer.RefererMiddleware': None,
+    'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware': 800,
+    'scrapy.spidermiddlewares.depth.DepthMiddleware': None,
+}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
-    'charitynavigator.middlewares.DelayedRetryMiddleware': 550,
+    'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware': None,
+    'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware': 350,
+    'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware': 400,
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
-    'scrapy_proxy_pool.middlewares.ProxyPoolMiddleware': 610,
-    'scrapy_proxy_pool.middlewares.BanDetectionMiddleware': 620,
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+    'charitynavigator.middlewares.DelayedRetryMiddleware': 550,
+    'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+    'scrapy.downloadermiddlewares.redirect.RedirectMiddleware': None,
+    'scrapy.downloadermiddlewares.cookies.CookiesMiddleware': 700,
+    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 750,
+    'scrapy.downloadermiddlewares.stats.DownloaderStats': 850,
+    'scrapy.downloadermiddlewares.httpcache.HttpCacheMiddleware': 900,
 }
 
 # Enable or disable extensions
@@ -81,15 +93,13 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "charitynavigator.pipelines.CharitynavigatorPipeline": 300,
-#}
+ITEM_PIPELINES = {}
 
 # AutoThrottle settings
 AUTOTHROTTLE_ENABLED = True
 AUTOTHROTTLE_START_DELAY = 0.1  # Start with shorter delay
 AUTOTHROTTLE_MAX_DELAY = 0.5    # Cap at half second
-AUTOTHROTTLE_TARGET_CONCURRENCY = 64.0
+AUTOTHROTTLE_TARGET_CONCURRENCY = 16.0
 
 # Enable showing throttling stats for every response received:
 #AUTOTHROTTLE_DEBUG = False
@@ -110,13 +120,49 @@ FEED_EXPORT_ENCODING = "utf-8"
 # Retry settings
 RETRY_ENABLED = True
 RETRY_TIMES = 5
-RETRY_HTTP_CODES = [500, 502, 503, 504, 400, 403, 404, 406, 408]
+RETRY_HTTP_CODES = [500, 502, 503, 504, 400, 403, 404, 406, 408, 429]
 RETRY_PRIORITY_ADJUST = -1
 
-# Disable compression
-COMPRESSION_ENABLED = False
+# Add compression handling
+COMPRESSION_ENABLED = True
+COMPRESSION_CODECS = {
+    'gzip': 'scrapy.downloadermiddlewares.compression.GzipDecompressor',
+    'deflate': 'scrapy.downloadermiddlewares.compression.DeflateDecompressor',
+    'br': 'scrapy.downloadermiddlewares.compression.BrotliDecompressor',
+}
 
 # DNS settings for better performance
 DNS_TIMEOUT = 10
 DNSCACHE_ENABLED = True
 DNSCACHE_SIZE = 10000
+
+# Disable redirect middleware to handle them manually
+REDIRECT_ENABLED = False
+
+# Set a download timeout
+DOWNLOAD_TIMEOUT = 30
+
+# Enable memory usage debugging
+MEMUSAGE_ENABLED = True
+MEMUSAGE_WARNING_MB = 0
+
+# # Adjust log level
+# LOG_LEVEL = 'INFO'
+
+# Disable loading of images, styles, and scripts
+ROBOTSTXT_OBEY = False
+COOKIES_ENABLED = True
+MEDIA_ALLOW_REDIRECTS = False
+
+# Disable downloading of various media types
+IMAGES_ENABLED = False
+MEDIA_DOWNLOADS_ENABLED = False
+
+# Explicitly disable specific handlers
+DOWNLOAD_HANDLERS = {
+    'image': None,
+    'media': None,
+}
+
+# Disable caching
+HTTPCACHE_ENABLED = False

@@ -107,12 +107,11 @@ class CharitynavigatorDownloaderMiddleware:
 
 class DelayedRetryMiddleware(RetryMiddleware):
     def _retry(self, request, reason, spider):
-        retries = request.meta.get('retry_times', 10)
+        retries = request.meta.get('retry_times', 0)  
         
-        # If it's a retry (not first attempt), wait 10 minutes
         if retries > 0:
             spider.logger.info(f'Waiting 10 minutes before retry {retries}/5 for: {request.url}')
-            time.sleep(600)  # 10 minutes
+            time.sleep(60)  
             
         # Use all default retry behavior
         return super()._retry(request, reason, spider)
