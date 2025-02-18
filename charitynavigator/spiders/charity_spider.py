@@ -4,17 +4,20 @@ import json
 import os
 
 # TODO: add parse exception handling
-
-START_FILE = "eo1.json"
+# TODO: after 100000 requests, take a break
 
 class CharitySpider(scrapy.Spider):
     name = 'charity'  
     allowed_domains = ['charitynavigator.org']  # Restrict crawling to this domain
     
+    def __init__(self, input_file=None, *args, **kwargs):
+        super(CharitySpider, self).__init__(*args, **kwargs)
+        self.input_file = input_file or "eo1.json"  # Default to eo1.json if not specified
+    
     start_urls = []  # Initialize as empty list
     
     def _prepare_start_urls(self):
-        with open(START_FILE, 'r') as file:
+        with open(self.input_file, 'r') as file:
             ein_list = json.load(file)['ein_numbers']
         return [f'https://www.charitynavigator.org/ein/{ein}' for ein in ein_list]
     
