@@ -1,2 +1,48 @@
-[2025-02-18 04:48:40] Starting scraping process
-[2025-02-18 04:48:40] Starting scraping for eo1_chunk_1.json
+[2025-02-18 05:23:00] Starting scraping process
+[2025-02-18 05:23:00] Starting scraping for input_files/eo1_chunk_1.json
+[2025-02-18 05:25:56] Starting scraping process
+[2025-02-18 05:25:56] Starting scraping for input_files/eo1_chunk_1.json
+[2025-02-18 05:27:00] Completed scraping input_files/eo1_chunk_1.json
+[2025-02-18 05:27:01] Starting scraping for input_files/eo1_chunk_2.json
+[2025-02-18 05:30:37] Completed scraping input_files/eo1_chunk_2.json
+[2025-02-18 05:30:38] Starting scraping for input_files/eo1_chunk_3.json
+[2025-02-18 05:39:16] Starting scraping process
+[2025-02-18 05:39:16] Starting scraping for input_files/eo1_chunk_1.json
+[2025-02-18 05:41:51] Completed scraping input_files/eo1_chunk_1.json
+[2025-02-18 05:41:52] Starting scraping for input_files/eo1_chunk_2.json
+[2025-02-18 05:44:27] Completed scraping input_files/eo1_chunk_2.json
+[2025-02-18 05:44:28] Starting scraping for input_files/eo1_chunk_3.json
+[2025-02-18 05:47:04] Completed scraping input_files/eo1_chunk_3.json
+[2025-02-18 05:47:05] Starting scraping for input_files/eo1_chunk_4.json
+[2025-02-18 05:49:38] Completed scraping input_files/eo1_chunk_4.json
+[2025-02-18 05:49:39] Starting scraping for input_files/eo1_chunk_5.json
+[2025-02-18 05:52:14] Completed scraping input_files/eo1_chunk_5.json
+[2025-02-18 05:52:15] Starting scraping for input_files/eo1_chunk_6.json
+[2025-02-18 05:54:48] Completed scraping input_files/eo1_chunk_6.json
+[2025-02-18 05:54:49] Starting scraping for input_files/eo1_chunk_7.json
+[2025-02-18 05:57:22] Completed scraping input_files/eo1_chunk_7.json
+[2025-02-18 05:57:23] Starting scraping for input_files/eo1_chunk_8.json
+[2025-02-18 06:00:00] Completed scraping input_files/eo1_chunk_8.json
+[2025-02-18 06:00:01] Starting scraping for input_files/eo1_chunk_9.json
+[2025-02-18 06:02:36] Completed scraping input_files/eo1_chunk_9.json
+[2025-02-18 06:02:37] Starting scraping for input_files/eo1_chunk_10.json
+[2025-02-18 06:05:13] Completed scraping input_files/eo1_chunk_10.json
+[2025-02-18 06:05:14] Starting scraping for input_files/eo1_chunk_11.json
+[2025-02-18 06:07:48] Completed scraping input_files/eo1_chunk_11.json
+[2025-02-18 06:07:49] Starting scraping for input_files/eo1_chunk_12.json
+[2025-02-18 06:10:24] Completed scraping input_files/eo1_chunk_12.json
+[2025-02-18 06:10:25] Starting scraping for input_files/eo1_chunk_13.json
+[2025-02-18 06:13:02] Completed scraping input_files/eo1_chunk_13.json
+[2025-02-18 06:13:03] Starting scraping for input_files/eo1_chunk_14.json
+[2025-02-18 06:15:36] Completed scraping input_files/eo1_chunk_14.json
+[2025-02-18 06:15:37] Starting scraping for input_files/eo1_chunk_15.json
+[2025-02-18 06:18:12] Completed scraping input_files/eo1_chunk_15.json
+[2025-02-18 06:18:14] Starting scraping for input_files/eo1_chunk_16.json
+[2025-02-18 06:20:48] Completed scraping input_files/eo1_chunk_16.json
+[2025-02-18 06:20:49] Starting scraping for input_files/eo1_chunk_17.json
+[2025-02-18 06:23:21] Completed scraping input_files/eo1_chunk_17.json
+[2025-02-18 06:23:22] Starting scraping for input_files/eo1_chunk_18.json
+[2025-02-18 06:25:57] Completed scraping input_files/eo1_chunk_18.json
+[2025-02-18 06:25:58] Starting scraping for input_files/eo1_chunk_19.json
+[2025-02-18 06:28:32] Completed scraping input_files/eo1_chunk_19.json
+[2025-02-18 06:28:33] Starting scraping for input_files/eo1_chunk_20.json

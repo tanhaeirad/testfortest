@@ -1,7 +1,7 @@
 import subprocess
 import time
 from datetime import datetime
-
+import os
 def log_message(message):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] {message}")
@@ -22,6 +22,8 @@ def run_spider_for_chunk(input_file, output_file):
         log_message(f"Completed scraping {input_file}")
         
         # Take a break between chunks        
+        time.sleep(1)
+        
     except subprocess.CalledProcessError as e:
         log_message(f"Error processing {input_file}: {str(e)}")
     except Exception as e:
@@ -30,9 +32,13 @@ def run_spider_for_chunk(input_file, output_file):
 def main():
     # Process each original file's chunks
     for file_num in ['1', '2', '3']:
-        for chunk_num in range(1, 21):  # Assuming max 20 chunks per file
-            input_file = f'eo{file_num}_chunk_{chunk_num}.json'
+        for chunk_num in range(1, 2000):  # Assuming max 2000 chunks per file
+            input_file = f'input_files/eo{file_num}_chunk_{chunk_num}.json'
             output_file = f'results/results_eo{file_num}_chunk_{chunk_num}.csv'
+            
+            if os.path.exists(output_file):
+                log_message(f"Skipping {input_file} because {output_file} exists")
+                continue
             
             try:
                 with open(input_file):

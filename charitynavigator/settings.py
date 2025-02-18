@@ -36,10 +36,13 @@ DEFAULT_REQUEST_HEADERS = {
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
-# High-performance settings
-CONCURRENT_REQUESTS = 64  # Aggressive concurrency
-CONCURRENT_REQUESTS_PER_DOMAIN = 64
-DOWNLOAD_DELAY = 0.25  # Quarter second delay
+# High-performance settings with random delay
+CONCURRENT_REQUESTS = 128
+CONCURRENT_REQUESTS_PER_DOMAIN = 128
+
+# Random delay between 0.1 and 0.5 seconds
+DOWNLOAD_DELAY = 0.25
+RANDOMIZE_DOWNLOAD_DELAY = True  # This will multiply DOWNLOAD_DELAY by random value between 0.5 and 1.5
 
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = False
@@ -62,6 +65,8 @@ COOKIES_ENABLED = False
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
+    'charitynavigator.middlewares.DelayedRetryMiddleware': 550,
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
     'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
     'scrapy_proxy_pool.middlewares.ProxyPoolMiddleware': 610,
@@ -82,9 +87,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # AutoThrottle settings
 AUTOTHROTTLE_ENABLED = True
-AUTOTHROTTLE_START_DELAY = 0.5
-AUTOTHROTTLE_MAX_DELAY = 10  # Reduced maximum delay
-AUTOTHROTTLE_TARGET_CONCURRENCY = 32.0  # Very aggressive
+AUTOTHROTTLE_START_DELAY = 0.1  # Start with shorter delay
+AUTOTHROTTLE_MAX_DELAY = 0.5    # Cap at half second
+AUTOTHROTTLE_TARGET_CONCURRENCY = 64.0
 
 # Enable showing throttling stats for every response received:
 #AUTOTHROTTLE_DEBUG = False
@@ -104,7 +109,7 @@ FEED_EXPORT_ENCODING = "utf-8"
 
 # Retry settings
 RETRY_ENABLED = True
-RETRY_TIMES = 5  # Try 5 times before giving up
+RETRY_TIMES = 5
 RETRY_HTTP_CODES = [500, 502, 503, 504, 400, 403, 404, 406, 408]
 RETRY_PRIORITY_ADJUST = -1
 

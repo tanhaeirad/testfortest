@@ -19,7 +19,7 @@ def split_ein_file(input_file, prefix):
         end_idx = start_idx + CHUNK_SIZE
         chunk = ein_numbers[start_idx:end_idx]
         
-        output_file = f"{prefix}_chunk_{i+1}.json"
+        output_file = f"input_files/{prefix}_chunk_{i+1}.json"
         with open(output_file, 'w') as f:
             json.dump({'ein_numbers': chunk}, f)
         print(f"Created {output_file} with {len(chunk)} EINs")

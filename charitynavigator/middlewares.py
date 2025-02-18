@@ -4,6 +4,8 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from scrapy.downloadermiddlewares.retry import RetryMiddleware
+import time
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
@@ -46,7 +48,7 @@ class CharitynavigatorSpiderMiddleware:
     def process_start_requests(self, start_requests, spider):
         # Called with the start requests of the spider, and works
         # similarly to the process_spider_output() method, except
-        # that it doesn’t have a response associated.
+        # that it doesn't have a response associated.
 
         # Must return only requests (not items).
         for r in start_requests:
@@ -101,3 +103,16 @@ class CharitynavigatorDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info("Spider opened: %s" % spider.name)
+
+
+class DelayedRetryMiddleware(RetryMiddleware):
+    def _retry(self, request, reason, spider):
+        retries = request.meta.get('retry_times', 10)
+        
+        # If it's a retry (not first attempt), wait 10 minutes
+        if retries > 0:
+            spider.logger.info(f'Waiting 10 minutes before retry {retries}/5 for: {request.url}')
+            time.sleep(600)  # 10 minutes
+            
+        # Use all default retry behavior
+        return super()._retry(request, reason, spider)
