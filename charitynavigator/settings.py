@@ -38,15 +38,15 @@ DEFAULT_REQUEST_HEADERS = {
 ROBOTSTXT_OBEY = False
 
 # High-performance settings with random delay
-CONCURRENT_REQUESTS = 128
-CONCURRENT_REQUESTS_PER_DOMAIN = 128
+CONCURRENT_REQUESTS = 8
+CONCURRENT_REQUESTS_PER_DOMAIN = 8
 
 # Random delay between 0.1 and 0.5 seconds
-DOWNLOAD_DELAY = 0.001
-RANDOMIZE_DOWNLOAD_DELAY = True  # This will multiply DOWNLOAD_DELAY by random value between 0.5 and 1.5
+# DOWNLOAD_DELAY = 0.1
+# RANDOMIZE_DOWNLOAD_DELAY = True  # This will multiply DOWNLOAD_DELAY by random value between 0.5 and 1.5
 
 # Disable cookies (enabled by default)
-COOKIES_ENABLED = False
+COOKIES_ENABLED = True
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -73,12 +73,10 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware': None,
     'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware': 350,
     'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware': 400,
-    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
-    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
-    'charitynavigator.middlewares.DelayedRetryMiddleware': 550,
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': 400,
+    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': None,
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': 500,
     'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
-    'scrapy.downloadermiddlewares.redirect.RedirectMiddleware': None,
     'scrapy.downloadermiddlewares.cookies.CookiesMiddleware': 700,
     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 750,
     'scrapy.downloadermiddlewares.stats.DownloaderStats': 850,
@@ -96,7 +94,7 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {}
 
 # AutoThrottle settings
-AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_ENABLED = False
 AUTOTHROTTLE_START_DELAY = 0.1  # Start with shorter delay
 AUTOTHROTTLE_MAX_DELAY = 0.5    # Cap at half second
 AUTOTHROTTLE_TARGET_CONCURRENCY = 16.0
@@ -119,7 +117,7 @@ FEED_EXPORT_ENCODING = "utf-8"
 
 # Retry settings
 RETRY_ENABLED = True
-RETRY_TIMES = 5
+RETRY_TIMES = 3
 RETRY_HTTP_CODES = [500, 502, 503, 504, 400, 403, 404, 406, 408, 429]
 RETRY_PRIORITY_ADJUST = -1
 
@@ -140,14 +138,17 @@ DNSCACHE_SIZE = 10000
 REDIRECT_ENABLED = False
 
 # Set a download timeout
-DOWNLOAD_TIMEOUT = 30
+DOWNLOAD_TIMEOUT = 15
 
 # Enable memory usage debugging
 MEMUSAGE_ENABLED = True
 MEMUSAGE_WARNING_MB = 0
+MEMUSAGE_LIMIT_MB = 2048
+MEMUSAGE_CHECK_INTERVAL_SECONDS = 60
 
-# # Adjust log level
+# Log settings
 # LOG_LEVEL = 'INFO'
+# LOG_ENABLED = True
 
 # Disable loading of images, styles, and scripts
 ROBOTSTXT_OBEY = False
@@ -166,3 +167,11 @@ DOWNLOAD_HANDLERS = {
 
 # Disable caching
 HTTPCACHE_ENABLED = False
+
+# Queue settings
+SCHEDULER_PRIORITY_QUEUE = 'scrapy.pqueues.DownloaderAwarePriorityQueue'
+SCHEDULER_DISK_QUEUE = 'scrapy.squeues.PickleLifoDiskQueue'
+SCHEDULER_MEMORY_QUEUE = 'scrapy.squeues.LifoMemoryQueue'
+
+# Try using Google or Cloudflare DNS
+# DNS_RESOLVER = '8.8.8.8'  # Google DNS
