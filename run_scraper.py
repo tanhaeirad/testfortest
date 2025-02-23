@@ -2,6 +2,8 @@ import subprocess
 import time
 from datetime import datetime
 import os
+import sys
+
 def log_message(message):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] {message}")
@@ -30,9 +32,26 @@ def run_spider_for_chunk(input_file, output_file):
         log_message(f"Unexpected error with {input_file}: {str(e)}")
 
 def main():
+    # Get command line argument, default to processing all chunks if no argument
+    try:
+        mode = int(sys.argv[1])
+        if mode not in [0, 1]:
+            log_message("Error: Argument must be 0 (even chunks) or 1 (odd chunks)")
+            return
+    except IndexError:
+        log_message("No mode specified, processing all chunks")
+        mode = None
+    except ValueError:
+        log_message("Error: Argument must be 0 (even chunks) or 1 (odd chunks)")
+        return
+
     # Process each original file's chunks
     for file_num in ['1', '2', '3']:
         for chunk_num in range(1, 2000):  # Assuming max 2000 chunks per file
+            # Skip if not matching even/odd mode
+            if mode is not None and chunk_num % 2 != mode:
+                continue
+                
             input_file = f'input_files/eo{file_num}_chunk_{chunk_num}.json'
             output_file = f'results/results_eo{file_num}_chunk_{chunk_num}.csv'
             
